@@ -2,6 +2,8 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
+import Link from "next/link";
+import { getYears } from "@/apiClient/ignobleApi";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,9 @@ export default function Home(props) {
         <h1>Ignoble prizes</h1>
         <div>
           {props.years.map((year) => (
-            <button key={year}>{year}</button>
+            <Link key={year} href={`./years/${year}`}>
+              <button>{year}</button>
+            </Link>
           ))}
         </div>
       </main>
@@ -28,13 +32,11 @@ export default function Home(props) {
 }
 
 export async function getStaticProps(context) {
-  console.log("HELLO??");
-  const response = await fetch("https://ignoble-api.onrender.com/years");
-  const data = await response.json();
-  console.log(data.years);
+  const years = await getYears();
+
   return {
     props: {
-      years: data.years,
+      years: years,
     }, // will be passed to the page component as props
   };
 }
